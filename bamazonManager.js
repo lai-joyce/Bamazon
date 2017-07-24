@@ -32,7 +32,7 @@ function managerActions() {
 			} else {
 					// when not available
 					console.log("Action not available");
-					exit(1);
+					// exit(1);
 				}
 			}
 		}
@@ -48,7 +48,7 @@ function managerActions() {
 			} else {
 			// when not available
 			console.log("Action not available");
-			exit(1);
+			// exit(1);
 		}
 	})
 	}
@@ -88,6 +88,80 @@ function showLowInventory() {
 		
 		connection.end();
 	});
+}
+
+function validateInput(value) {
+	var integer = Number.isInteger(parseFloat(value));
+	var sign = Math.sign(value);
+
+	if (integer && (sign === 1)) {
+		return true;
+	} else {
+		return "Please enter a positive integer.";
+	}
+}
+
+function validateNumeric(value) {
+	// Value must be a positive number
+	var number = (typeof parseFloat(value)) === 'number';
+	var positive = parseFloat(value) > 0;
+
+	if (number && positive) {
+		return true;
+	} else {
+		return "Must enter a positive number.";
+	}
+}
+
+function addToExistingInventory() {
+	inquirer.prompt([
+	{
+		name: "product_id",
+		type: "input",
+		message: "Which Item ID do you want to add more to?",
+		validate: validateInput,
+		filter: Number
+	},
+	{
+		name: "quantity",
+		type: "input",
+		message: "How many of these do you want to add?",
+		validate: validateInput,
+		filter: Number
+	}
+	]).then(function(answers) {
+		// console.log(answers.product_id);
+		var product = answers.product_id;
+		var quantityToAdd = answers.quantity;
+
+		var query = "SELECT * FROM products WHERE ?";
+
+		connection.query(query, {product_id: product}, function(err, data) {
+			if (err) throw err;
+			if (data.length === 0) {
+				console.log("Please select an Item ID.");
+				addToExistingInventory();
+			} else {
+				var productInfo = data[0];
+
+				console.log("Inventory is being updated......");
+
+				var queryToAdd = "UPDATE products SET stock_quantity = "
+				+ (productInfo.stock_quantity + quantityToAdd) + " WHERE product_id = " + product;
+				// console.log(queryToAdd);
+
+				connection.query(queryToAdd, function(err, data) {
+					if (err) throw err;
+
+					console.log("The count for Item ID " + product + " has been updated to " 
+						+ (productInfo.stock_quantity + quantityToAdd) + ".");
+					console.log("\n-----------------------------------------------------\n");
+
+					connection.end();
+				})
+			}
+		})
+	})
 }
 
 managerActions();
