@@ -164,6 +164,47 @@ function addToExistingInventory() {
 	})
 }
 
+function addNewProduct() {
+	inquirer.prompt([
+	{
+		name: "product_name",
+		type: "input",
+		message: "What do you want to add?"
+	},
+	{
+		name: "department_name",
+		type: "input",
+		message: "What category is this new item?"
+	},
+	{
+		name: "price",
+		type: "input",
+		message: "How much does one of these cost?",
+		validate: validateNumeric
+	},
+	{
+		name: "stock_quantity",
+		type: "input",
+		message: "How many of these do you want to put into stock?",
+		validate: validateNumeric
+	}
+	]).then(function(answer) {
+		console.log("Adding to inventory: \n    product_name = " + answer.product_name
+			+ "\n" + "    department_name = " + answer.department_name + "\n" 
+			+ "    price = " + answer.price + "\n" 
+			+ "    stock_quantity = " + answer.stock_quantity);
+
+		connection.query("INSERT INTO products SET ?", answer, function(err, data) {
+			if (err) throw err;
+			// console.log(data);
+			console.log('New product has been added to the inventory under Item ID ' + data.insertId + '.');
+			console.log("\n---------------------------------------------------------------------\n");
+
+			connection.end();
+		});
+	})
+}
+
 managerActions();
 
 
