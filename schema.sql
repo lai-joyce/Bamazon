@@ -25,3 +25,19 @@ VALUES
 ("treadmill", "fitness", 899, 6),
 ("Tylenol", "OTC-Drugs", 13.19, 86),
 ("TV", "electronics", 19999, 3);
+
+CREATE TABLE departments (
+	department_id INT AUTO_INCREMENT NOT NULL,
+	department_name VARCHAR(100) NOT NULL,
+	over_head_costs DECIMAL(10,2) NOT NULL,
+	primary key (department_id)
+);
+
+ALTER TABLE products
+ADD product_sales DECIMAL(10,2);
+
+ALTER TABLE products
+DROP COLUMN product_sales;
+
+ALTER TABLE products
+ADD product_sales DECIMAL(10,2);
