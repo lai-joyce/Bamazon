@@ -2,4 +2,4 @@
 
 ## Test
 
-* [test](https://youtu.be/hnlxv-bxO8E) - Screen Recording Test
+* [Bamazon Live](https://youtu.be/gFYL2pwt7eA) - Bamazon Demo Video
